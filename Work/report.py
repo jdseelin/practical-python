@@ -16,4 +16,13 @@ def read_portfolio(filename):
     return portfolio
 
 
-print(read_portfolio("Data/portfolio.csv"))
+def read_prices(filename):
+    """Map a csv file into a dict of names to prices"""
+    prices = {}
+    with open(filename, "rt") as f:
+        reader = csv.reader(f)
+        for row in reader:
+            # Ignore empty rows
+            if row:
+                prices[row[0]] = row[1]
+    return prices
