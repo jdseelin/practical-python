@@ -11,7 +11,7 @@ def read_portfolio(filename):
         reader = csv.reader(f)
         next(reader)  # Remove header
         for name, shares, price in reader:
-            portfolio.append((name, int(shares), float(price)))
+            portfolio.append({"name": name, "shares": shares, "price": price})
 
     return portfolio
 
