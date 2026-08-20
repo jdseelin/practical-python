@@ -11,7 +11,9 @@ def read_portfolio(filename):
         reader = csv.reader(f)
         next(reader)  # Remove header
         for name, shares, price in reader:
-            portfolio.append({"name": name, "shares": shares, "price": price})
+            portfolio.append(
+                {"name": name, "shares": int(shares), "price": float(price)}
+            )
 
     return portfolio
 
@@ -24,5 +26,22 @@ def read_prices(filename):
         for row in reader:
             # Ignore empty rows
             if row:
-                prices[row[0]] = row[1]
+                prices[row[0]] = float(row[1])
     return prices
+
+
+portfolio = read_portfolio("Data/portfolio.csv")
+prices = read_prices("Data/prices.csv")
+
+# Compute total cost of portfolio
+total_cost = 0
+for s in portfolio:
+    total_cost += s["shares"] * s["price"]
+
+# Compute current value of portfolio
+total_price = 0
+for s in portfolio:
+    total_price += s["shares"] * prices[s["name"]]
+
+print("Current value: {:.2f}".format(total_price))
+print("Gain/Loss: {:.2f}".format(total_cost - total_price))
