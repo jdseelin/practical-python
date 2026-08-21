@@ -58,5 +58,5 @@ def make_report(portfolio, prices):
     return report
 
 
-for r in make_report(portfolio, prices):
-    print(r)
+for name, shares, price, change in make_report(portfolio, prices):
+    print(f"{name:>10s} {shares:>10d} {price:>10.2f} {change:>10.2f}")
