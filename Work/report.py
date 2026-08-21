@@ -43,5 +43,20 @@ total_price = 0
 for s in portfolio:
     total_price += s["shares"] * prices[s["name"]]
 
-print("Current value: {:.2f}".format(total_price))
-print("Gain/Loss: {:.2f}".format(total_cost - total_price))
+# print("Current value: {:.2f}".format(total_price))
+# print("Gain/Loss: {:.2f}".format(total_cost - total_price))
+
+
+def make_report(portfolio, prices):
+    """Return a list of tuples (name, shares, current_price, change) given a portfolio list and prices dictionary"""
+    report = []
+    for stock in portfolio:
+        name = stock["name"]
+        current_price = prices[name]
+        change = current_price - stock["price"]
+        report.append((name, stock["shares"], current_price, change))
+    return report
+
+
+for r in make_report(portfolio, prices):
+    print(r)
