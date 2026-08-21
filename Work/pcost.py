@@ -11,16 +11,23 @@ def portfolio_cost(filename):
     total = 0
     with open(filename) as file:
         rows = csv.reader(file)
-        next(rows)  # Ignore header
-        for row in rows:
-            total += int(row[1]) * float(row[-1])
+        headers = next(rows)
+        for rowno, row in enumerate(rows, start=1):
+            record = dict(zip(headers, row))
+            try:
+                nshares = int(record["shares"])
+                price = float(record["price"])
+                total += nshares * price
+            except ValueError:
+                print(f"Row {rowno}: Bad row: {row}")
+
     return total
 
 
 if len(sys.argv) == 2:
     filename = sys.argv[1]
 else:
-    filename = "Data/portfolio.csv"
+    filename = input("Enter a filename: ")
 
 cost = portfolio_cost(filename)
 print("Total cost:", cost)
