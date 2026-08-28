@@ -30,23 +30,6 @@ def read_prices(filename):
     return prices
 
 
-portfolio = read_portfolio("Data/portfolio.csv")
-prices = read_prices("Data/prices.csv")
-
-# Compute total cost of portfolio
-total_cost = 0
-for s in portfolio:
-    total_cost += s["shares"] * s["price"]
-
-# Compute current value of portfolio
-total_price = 0
-for s in portfolio:
-    total_price += s["shares"] * prices[s["name"]]
-
-# print("Current value: {:.2f}".format(total_price))
-# print("Gain/Loss: {:.2f}".format(total_cost - total_price))
-
-
 def make_report(portfolio, prices):
     """Return a list of tuples (name, shares, current_price, change) given a portfolio list and prices dictionary"""
     report = []
@@ -58,9 +41,26 @@ def make_report(portfolio, prices):
     return report
 
 
-headers = ("Name", "Shares", "Price", "Change")
-print(f"{headers[0]:>10s} {headers[1]:>10s} {headers[2]:>10s} {headers[3]:>10s}")
-print(("-" * 10 + " ") * len(headers))
-for name, shares, price, change in make_report(portfolio, prices):
-    format_price = "${:.2f}".format(price)  # Add $ sign
-    print(f"{name:>10s} {shares:>10d} {format_price:>10} {change:>10.2f}")
+def print_report(report):
+    """
+    Print a nicely formated table from a list of (name, shares, price, change) tuples.
+    """
+    headers = ("Name", "Shares", "Price", "Change")
+    print(f"{headers[0]:>10s} {headers[1]:>10s} {headers[2]:>10s} {headers[3]:>10s}")
+    print(("-" * 10 + " ") * len(headers))
+    for name, shares, price, change in report:
+        format_price = "${:.2f}".format(price)  # Add $ sign
+        print(f"{name:>10s} {shares:>10d} {format_price:>10} {change:>10.2f}")
+
+
+def portfolio_report(portfolio_file, prices_file):
+    """
+    Make a stock report given portfolio and price data files.
+    """
+    portfolio = read_portfolio(portfolio_file)
+    prices = read_prices(prices_file)
+    report = make_report(portfolio, prices)
+    print_report(report)
+
+
+portfolio_report("Data/portfolio.csv", "Data/prices.csv")
