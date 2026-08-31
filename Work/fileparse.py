@@ -4,37 +4,35 @@
 import csv
 
 
-def parse_csv(filename, select=None, types=None):
+def parse_csv(filename, select=None, types=None, has_headers=True, delimiter=","):
     """
     Parse a csv file into a list of records
     """
     with open(filename) as f:
-        rows = csv.reader(f)
+        rows = csv.reader(f, delimiter=delimiter)
 
-        # Read the file headers
-        headers = next(rows)
+        # Read header if there is any
+        headers = next(rows) if has_headers else None
 
-        # If a column is selector was given, find indices of the specified columns
+        # If a column selector was given, find indices of the specified columns
         # Also narrow the set of headers used for resulting dictionaries
         if select:
             indices = [headers.index(colname) for colname in headers]
             headers = select
-        else:
-            indices = []
 
         records = []
         for row in rows:
-            if not row:  # Skip rows with no data
-                continue
-            # Filter the row if specific columns were selected
-            if indices:
-                row = [row[index] for index in indices]
-            # Apply type connversion to row
-            if types:
-                row = [func(val) for func, val in zip(types, row)]
+            if row:
+                # Filter the row if specific columns were selected
+                if select:
+                    row = [row[index] for index in indices]
+                # Apply type connversion to row
+                if types:
+                    row = [func(val) for func, val in zip(types, row)]
 
-            # Make a dictionary
-            record = dict(zip(headers, row))
-            records.append(record)
+                # Make a dictionary if a header is presen, tuple if none
+                record = dict(zip(headers, row)) if headers else tuple(row)
+
+                records.append(record)
 
     return records
