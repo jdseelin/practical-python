@@ -54,7 +54,3 @@ def parse_csv(
             records.append(record)
 
     return records
-
-
-portfolio = parse_csv("Data/missing.csv", types=[str, int, float], silence_errors=True)
-print(portfolio)
