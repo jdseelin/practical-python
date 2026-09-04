@@ -25,14 +25,18 @@ def parse_csv(filename, select=None, types=None, has_headers=True, delimiter=","
             headers = select
 
         records = []
-        for row in rows:
+        for rownum, row in enumerate(rows):
             if row:
                 # Filter the row if specific columns were selected
                 if select:
                     row = [row[index] for index in indices]
                 # Apply type connversion to row
                 if types:
-                    row = [func(val) for func, val in zip(types, row)]
+                    try:
+                        row = [func(val) for func, val in zip(types, row)]
+                    except ValueError as e:
+                        print(f"Row {rownum + 1}: Couldn't convert {row}")
+                        print(f"Row {rownum + 1}: Reason {e}")
 
                 # Make a dictionary if a header is presen, tuple if none
                 record = dict(zip(headers, row)) if headers else tuple(row)
@@ -40,3 +44,6 @@ def parse_csv(filename, select=None, types=None, has_headers=True, delimiter=","
                 records.append(record)
 
     return records
+
+
+portfolio = parse_csv("Data/missing.csv", types=[str, int, float])
