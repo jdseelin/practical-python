@@ -4,7 +4,14 @@
 import csv
 
 
-def parse_csv(filename, select=None, types=None, has_headers=True, delimiter=","):
+def parse_csv(
+    filename,
+    select=None,
+    types=None,
+    has_headers=True,
+    delimiter=",",
+    silence_errors=False,
+):
     """
     Parse a csv file into a list of records
     """
@@ -26,24 +33,28 @@ def parse_csv(filename, select=None, types=None, has_headers=True, delimiter=","
 
         records = []
         for rownum, row in enumerate(rows):
-            if row:
-                # Filter the row if specific columns were selected
-                if select:
-                    row = [row[index] for index in indices]
-                # Apply type connversion to row
-                if types:
-                    try:
-                        row = [func(val) for func, val in zip(types, row)]
-                    except ValueError as e:
+            if not row:
+                continue
+            # Filter the row if specific columns were selected
+            if select:
+                row = [row[index] for index in indices]
+            # Apply type connversion to row
+            if types:
+                try:
+                    row = [func(val) for func, val in zip(types, row)]
+                except ValueError as e:
+                    if not silence_errors:
                         print(f"Row {rownum + 1}: Couldn't convert {row}")
                         print(f"Row {rownum + 1}: Reason {e}")
+                    continue
 
-                # Make a dictionary if a header is presen, tuple if none
-                record = dict(zip(headers, row)) if headers else tuple(row)
+            # Make a dictionary if a header is presen, tuple if none
+            record = dict(zip(headers, row)) if headers else tuple(row)
 
-                records.append(record)
+            records.append(record)
 
     return records
 
 
-portfolio = parse_csv("Data/missing.csv", types=[str, int, float])
+portfolio = parse_csv("Data/missing.csv", types=[str, int, float], silence_errors=True)
+print(portfolio)
