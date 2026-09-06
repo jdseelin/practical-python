@@ -2,32 +2,26 @@
 #
 # Exercise 2.4
 import csv
+import fileparse
 
 
 def read_portfolio(filename):
-    """Computes the total cost (shares * price) of a portfolio file"""
-    portfolio = []
-    with open(filename, "rt") as f:
-        reader = csv.reader(f)
-        next(reader)  # Remove header
-        for name, shares, price in reader:
-            portfolio.append(
-                {"name": name, "shares": int(shares), "price": float(price)}
-            )
-
-    return portfolio
+    """
+    Read a stock portfolio file and return a list of dictionaries with
+    keys name, shares, and price.
+    """
+    return fileparse.parse_csv(
+        filename,
+        select=["name", "shares", "price"],
+        types=[str, int, float],
+    )
 
 
 def read_prices(filename):
-    """Map a csv file into a dict of names to prices"""
-    prices = {}
-    with open(filename, "rt") as f:
-        reader = csv.reader(f)
-        for row in reader:
-            # Ignore empty rows
-            if row:
-                prices[row[0]] = float(row[1])
-    return prices
+    """
+    Map a csv file into a dict of names to prices.
+    """
+    return dict(fileparse.parse_csv(filename, types=[str, float], has_headers=False))
 
 
 def make_report(portfolio, prices):
