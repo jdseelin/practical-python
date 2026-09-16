@@ -57,4 +57,5 @@ def portfolio_report(portfolio_file, prices_file):
     print_report(report)
 
 
-portfolio_report("Data/portfolio.csv", "Data/prices.csv")
+if __name__ == "__main__":
+    portfolio_report("Data/portfolio.csv", "Data/prices.csv")
